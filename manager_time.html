@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel com Picture-in-Picture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS completo com melhorias visuais e temas */
+        :root {
+            --bg-color: #f4f7fc;
+            --card-bg-color: #ffffff;
+            --text-color: #344767;
+            --heading-color: #344767;
+            --primary-color: #007bff;
+            --primary-hover-color: #0056b3;
+            --danger-color: #ea4335;
+            --danger-hover-color: #c82333;
+            --success-color: #34a853;
+            --success-hover-color: #2c8c42;
+            --warning-color: #fbbc05;
+            --warning-hover-color: #d69e04;
+            --border-color: #e0e6f0;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --font-family: 'Poppins', sans-serif;
+        }
+
+        body.dark-theme {
+            --bg-color: #1a1a1a;
+            --card-bg-color: #2a2a2a;
+            --text-color: #e0e0e0;
+            --heading-color: #ffffff;
+            --primary-color: #00aaff;
+            --primary-hover-color: #007ecc;
+            --border-color: #444;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .dashboard-container { max-width: 1200px; margin: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 25px; }
+        
+        .card {
+            background-color: var(--card-bg-color);
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px var(--shadow-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-top: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px var(--shadow-color); }
+        .card h3 { margin-top: 0; font-size: 1.25rem; font-weight: 600; color: var(--heading-color); }
+        .relogio-card { grid-column: 1 / -1; text-align: center; border-top-color: transparent; }
+        .relogio-display { font-size: 5rem; font-weight: 700; line-height: 1; color: var(--primary-color); }
+        .display { font-size: 2.75rem; font-weight: 600; margin: 10px 0; }
+        
+        .button-group { display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+        
+        button, select, input {
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: var(--font-family);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            background-color: transparent;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent);
+        }
+        
+        input { width: 100%; box-sizing: border-box; }
+        input[type="time"], input[type="number"] { text-align: center; }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            font-weight: 500;
+        }
+
+        button:hover { background-color: var(--primary-hover-color); transform: scale(1.05); }
+        button.danger { background-color: var(--danger-color); }
+        button.danger:hover { background-color: var(--danger-hover-color); }
+        button.success { background-color: var(--success-color); }
+        button.success:hover { background-color: var(--success-hover-color); }
+        button.warning { background-color: var(--warning-color); color: #333;}
+        button.warning:hover { background-color: var(--warning-hover-color); }
+        button:disabled { background-color: #6c757d; cursor: not-allowed; opacity: 0.7; transform: none; }
+
+        #theme-toggle-btn { font-size: 18px; padding: 5px 10px; background-color: transparent; color: var(--text-color); border: 1px solid var(--border-color); }
+
+        .timer-card { border-top-color: var(--success-color); }
+        .cron-card { border-top-color: #17a2b8; }
+        .alarm-card { border-top-color: var(--warning-color); }
+        
+        label { display: block; margin: 15px 0 8px 0; font-weight: 500; }
+        
+        .time-input-wrapper { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0; }
+        .time-input-wrapper input { width: 70px; font-size: 1.5rem; padding: 8px; }
+        .time-input-wrapper span { font-size: 1.2rem; color: var(--text-color); opacity: 0.7; }
+
+        .preset-times { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 15px 0; }
+        .preset-btn { padding: 4px 10px !important; font-size: 12px !important; background-color: transparent !important; border: 1px solid var(--border-color) !important; color: var(--text-color) !important; }
+        .preset-btn:hover { background-color: var(--border-color) !important; color: var(--text-color) !important; transform: none; }
+        body.dark-theme .preset-btn:hover { color: var(--bg-color) !important; }
+        
+        .full-width-container { grid-column: 1 / -1; }
+        .full-width-container h2 { text-align: center; color: var(--text-color); opacity: 0.8; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <div class="card relogio-card">
+        <h3 id="date-display"></h3>
+        <div id="relogio-display" class="relogio-display">00:00:00</div>
+        <div class="button-group" style="margin-top: 10px; align-items: center;">
+            <button id="toggle-pip-btn">Painel Flutuante</button>
+            <button id="theme-toggle-btn">🌙</button>
+        </div>
+    </div>
+    <div class="card">
+        <h3>Criar Despertador</h3>
+        <input type="text" id="alarm-name-input" placeholder="Nome do Despertador (opcional)" style="margin-bottom: 15px;">
+        <input type="time" id="desp-time-input" step="1" style="width: 80%; padding: 10px; font-size: 1.2rem;">
+        <div class="preset-times" id="alarm-preset-times-container"></div>
+        <label for="desp-sound-creator">Som do despertador:</label>
+        <select id="desp-sound-creator" class="sound-selector"></select>
+        <div class="button-group">
+            <button id="add-despertador">Despertador</button>
+        </div>
+    </div>
+    <div class="card">
+        <h3>Criar Timer</h3>
+        <input type="text" id="timer-name-input" placeholder="Nome do Timer (opcional)" style="margin-bottom: 15px;">
+        <div class="time-input-wrapper">
+            <input type="number" id="temp-hours" min="0" max="99" value="0"><span>H</span>
+            <input type="number" id="temp-minutes" min="0" max="59" value="5"><span>M</span>
+            <input type="number" id="temp-seconds" min="0" max="59" value="0"><span>S</span>
+        </div>
+        <div class="preset-times" id="preset-times-container"></div>
+        <label for="timer-sound-creator">Som do timer:</label>
+        <select id="timer-sound-creator" class="sound-selector"></select>
+        <div class="button-group">
+            <button id="add-temporizador">Temporizador</button>
+            <button id="add-cronometro">Cronômetro</button>
+        </div>
+    </div>
+    <div class="full-width-container" id="alarms-section" style="display:none;">
+        <h2>Alarmes Ativos</h2>
+        <div id="active-alarms-container" class="dashboard-container"></div>
+    </div>
+    <div class="full-width-container" id="timers-section" style="display:none;">
+        <h2>Timers Ativos</h2>
+        <div id="active-timers-container" class="dashboard-container"></div>
+    </div>
+    <div class="card" style="grid-column: 1 / -1;">
+        <h3>Configurações de Sons</h3>
+        <label for="sound-files">Carregar arquivos de som (.mp3):</label>
+        <input type="file" id="sound-files" accept=".mp3" multiple>
+    </div>
+</div>
+<audio id="audio-player"></audio>
+
+<script>
+    // =========================================================================
+    // 1. GERENCIADOR DE BANCO DE DADOS (INDEXEDDB) PARA SONS
+    // =========================================================================
+    const DB_NAME = 'TimerAppDB';
+    const DB_VERSION = 1;
+    const SOUND_STORE_NAME = 'sounds';
+    let db;
+
+    function initDB() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(DB_NAME, DB_VERSION);
+            request.onupgradeneeded = (event) => {
+                const db = event.target.result;
+                if (!db.objectStoreNames.contains(SOUND_STORE_NAME)) {
+                    db.createObjectStore(SOUND_STORE_NAME, { keyPath: 'name' });
+                }
+            };
+            request.onsuccess = (event) => { db = event.target.result; resolve(db); };
+            request.onerror = (event) => { console.error("Erro no IndexedDB:", event.target.errorCode); reject(event.target.errorCode); };
+        });
+    }
+
+    function saveSoundToDB(soundFile) {
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction([SOUND_STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(SOUND_STORE_NAME);
+            const request = store.put({ name: soundFile.name, file: soundFile });
+            request.onsuccess = resolve;
+            request.onerror = reject;
+        });
+    }
+
+    function getSoundsFromDB() {
+        return new Promise((resolve, reject) => {
+            if (!db) { return resolve([]); }
+            const transaction = db.transaction([SOUND_STORE_NAME], 'readonly');
+            const store = transaction.objectStore(SOUND_STORE_NAME);
+            const request = store.getAll();
+            request.onsuccess = (event) => { resolve(event.target.result); };
+            request.onerror = reject;
+        });
+    }
+
+    // =========================================================================
+    // 2. LÓGICA PRINCIPAL DA APLICAÇÃO
+    // =========================================================================
+    const state = {
+        relogioInterval: null, sounds: [], timers: {}, alarms: {}, nextTimerId: 0, nextAlarmId: 0,
+        pipWindow: null, pipUpdateInterval: null
+    };
+
+    // --- FUNÇÕES UTILITÁRIAS ---
+    function formatTime(totalSeconds) { return `${Math.floor(totalSeconds / 3600).toString().padStart(2, '0')}:${Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0')}:${Math.floor(totalSeconds % 60).toString().padStart(2, '0')}`; }
+    function playSound(soundUrl) { if (soundUrl) { document.getElementById('audio-player').src = soundUrl; document.getElementById('audio-player').play().catch(e => console.error("Erro ao tocar áudio:", e)); } }
+    function showNotification(title, message) { if (!("Notification" in window)) { alert(message); } else if (Notification.permission === "granted") { new Notification(title, { body: message }); } else if (Notification.permission !== "denied") { Notification.requestPermission().then(p => { if (p === "granted") new Notification(title, { body: message }); }); } }
+    
+    // --- RELÓGIO PRINCIPAL ---
+    function startRelogio() { const update = () => { const now = new Date(); document.getElementById('relogio-display').textContent = now.toLocaleTimeString('pt-BR'); document.getElementById('date-display').textContent = now.toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).replace(/^\w/, c => c.toUpperCase()); }; update(); state.relogioInterval = setInterval(update, 1000); }
+    
+    // =========================================================================
+    // 3. FUNÇÕES DE PERSISTÊNCIA (localStorage)
+    // =========================================================================
+    function saveState() {
+        const stateToSave = {
+            timers: {}, alarms: {},
+            nextTimerId: state.nextTimerId, nextAlarmId: state.nextAlarmId
+        };
+        for (const id in state.timers) {
+            const timer = state.timers[id];
+            let currentElapsedTime = timer.elapsedTime;
+            if (timer.running) {
+                 currentElapsedTime += Date.now() - timer.startTime;
+            }
+            stateToSave.timers[id] = { id: timer.id, name: timer.name, type: timer.type, soundName: timer.soundName, initialSeconds: timer.initialSeconds, elapsedTime: currentElapsedTime, running: timer.running };
+        }
+        for (const id in state.alarms) {
+            const alarm = state.alarms[id];
+            stateToSave.alarms[id] = { id: alarm.id, name: alarm.name, alarmTime: alarm.alarmTime.getTime(), soundName: alarm.soundName };
+        }
+        localStorage.setItem('timerDashboardState', JSON.stringify(stateToSave));
+    }
+
+    async function loadState() {
+        const savedSounds = await getSoundsFromDB();
+        state.sounds = savedSounds.map(s => ({ name: s.name, url: URL.createObjectURL(s.file) }));
+        updateSoundSelectors();
+
+        const savedState = localStorage.getItem('timerDashboardState');
+        if (savedState) {
+            const parsedState = JSON.parse(savedState);
+            state.nextTimerId = parsedState.nextTimerId || 0;
+            state.nextAlarmId = parsedState.nextAlarmId || 0;
+
+            for (const id in parsedState.timers) {
+                const savedTimer = parsedState.timers[id];
+                const sound = state.sounds.find(s => s.name === savedTimer.soundName);
+                createTimerCard(savedTimer.id, savedTimer.name, savedTimer.type, sound ? sound.url : '', savedTimer.initialSeconds, savedTimer.soundName);
+
+                const timer = state.timers[id];
+                timer.elapsedTime = savedTimer.elapsedTime;
+                
+                if (savedTimer.type === 'temp' && timer.elapsedTime >= timer.initialSeconds * 1000) {
+                    timer.displayElement.textContent = "Finalizado!";
+                    timer.displayElement.style.color = '#dc3545';
+                    timer.running = false;
+                } else if (savedTimer.running) {
+                    startTimer(id);
+                } else {
+                    if (timer.type === 'temp') {
+                        const remainingSeconds = timer.initialSeconds - (timer.elapsedTime / 1000);
+                        timer.displayElement.textContent = formatTime(Math.max(0, remainingSeconds));
+                    } else {
+                        timer.displayElement.textContent = formatTime(timer.elapsedTime / 1000);
+                    }
+                }
+            }
+            for (const id in parsedState.alarms) {
+                const savedAlarm = parsedState.alarms[id];
+                const alarmDate = new Date(savedAlarm.alarmTime);
+                if (alarmDate > new Date()) {
+                    const sound = state.sounds.find(s => s.name === savedAlarm.soundName);
+                    createAlarmCard(savedAlarm.id, savedAlarm.name, alarmDate, sound ? sound.url : '', savedAlarm.soundName);
+                }
+            }
+        }
+    }
+
+    // =========================================================================
+    // 4. LÓGICA DE PICTURE-IN-PICTURE (Dashboard Interativo)
+    // =========================================================================
+    function updatePipDashboard() {
+        if (!state.pipWindow || state.pipWindow.closed) {
+            if (state.pipUpdateInterval) clearInterval(state.pipUpdateInterval);
+            state.pipUpdateInterval = null;
+            state.pipWindow = null;
+            return;
+        }
+
+        const pipDoc = state.pipWindow.document;
+        pipDoc.getElementById('pip-relogio').textContent = new Date().toLocaleTimeString('pt-BR');
+        
+        const alarmsContainer = pipDoc.getElementById('pip-alarms');
+        let alarmsHtml = '<h4>Alarmes</h4>';
+        if (Object.keys(state.alarms).length > 0) {
+            for (const id in state.alarms) {
+                const alarm = state.alarms[id];
+                const title = alarm.name || `Despertador #${id}`;
+                alarmsHtml += `<div class="item alarm"><div class="info"><span>${title}</span><strong>${alarm.alarmTime.toLocaleTimeString('pt-BR')}</strong></div></div>`;
+            }
+        } else {
+            alarmsHtml += '<div class="item">Nenhum alarme ativo</div>';
+        }
+        alarmsContainer.innerHTML = alarmsHtml;
+
+        const timersContainer = pipDoc.getElementById('pip-timers');
+        let timersHtml = '<h4>Timers</h4>';
+        if (Object.keys(state.timers).length > 0) {
+            for (const id in state.timers) {
+                const timer = state.timers[id];
+                const title = timer.name || (timer.type === 'temp' ? `Temporizador #${id}`: `Cronômetro #${id}`);
+                timersHtml += `
+                    <div class="item timer ${timer.running ? 'running' : ''}">
+                        <div class="info">
+                            <span>${title}</span>
+                            <strong>${timer.displayElement.textContent}</strong>
+                        </div>
+                        <div class="controls">
+                            <button class="pip-btn pip-start-btn" data-id="${id}" ${timer.running ? 'disabled' : ''}>▶</button>
+                            <button class="pip-btn pip-stop-btn" data-id="${id}" ${!timer.running ? 'disabled' : ''}>❚❚</button>
+                            <button class="pip-btn pip-remove-btn" data-id="${id}">×</button>
+                        </div>
+                    </div>`;
+            }
+        } else {
+            timersHtml += '<div class="item">Nenhum timer ativo</div>';
+        }
+        timersContainer.innerHTML = timersHtml;
+
+        pipDoc.querySelectorAll('.pip-start-btn').forEach(btn => btn.onclick = () => startTimer(btn.dataset.id));
+        pipDoc.querySelectorAll('.pip-stop-btn').forEach(btn => btn.onclick = () => stopTimer(btn.dataset.id, true));
+        pipDoc.querySelectorAll('.pip-remove-btn').forEach(btn => btn.onclick = () => removeTimer(btn.dataset.id));
+    }
+
+    async function togglePipDashboard() {
+        if (state.pipWindow) {
+            state.pipWindow.close();
+            return;
+        }
+        try {
+            const pipWindow = await documentPictureInPicture.requestWindow({ width: 400, height: 500 });
+            state.pipWindow = pipWindow;
+            const pipDocument = pipWindow.document;
+            pipDocument.body.className = document.body.className;
+            pipDocument.body.innerHTML = `
+                <style>
+                    :root { --pip-bg: #1e1e1e; --pip-text: #e0e0e0; --pip-heading: #00aaff; --pip-border: #444; --pip-item-bg: #333; }
+                    body.light-theme { --pip-bg: #f0f2f5; --pip-text: #333; --pip-heading: #007bff; --pip-border: #dee2e6; --pip-item-bg: #fff; }
+                    body { margin: 0; background-color: var(--pip-bg); color: var(--pip-text); font-family: 'Poppins', sans-serif; font-size: 14px; }
+                    .pip-dashboard { padding: 15px; height: 100%; overflow-y: auto; box-sizing: border-box; }
+                    .pip-relogio-display { font-size: 2rem; font-weight: 600; text-align: center; margin-bottom: 15px; color: var(--pip-heading); }
+                    h4 { margin: 15px 0 5px 0; border-bottom: 1px solid var(--pip-border); padding-bottom: 3px; color: var(--pip-text); opacity: 0.8; }
+                    .item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-radius: 6px; margin-bottom: 8px; background-color: var(--pip-item-bg); }
+                    .item.alarm { border-left: 4px solid #fbbc05; padding-left: 6px; }
+                    .item.timer.running { border-left: 4px solid #28a745; padding-left: 6px; }
+                    .info { display: flex; flex-direction: column; }
+                    .info span { font-size: 12px; opacity: 0.8; }
+                    .info strong { font-family: monospace; font-size: 18px; }
+                    .controls { display: flex; gap: 5px; }
+                    .pip-btn { background: #555; color: white; border: none; border-radius: 5px; width: 28px; height: 28px; cursor: pointer; font-size: 14px; line-height: 28px; text-align: center; }
+                    .pip-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+                    .pip-start-btn { background: #28a745; }
+                    .pip-stop-btn { background: #fbbc05; }
+                    .pip-remove-btn { background: #ea4335; }
+                </style>
+                <div class="pip-dashboard">
+                    <div id="pip-relogio" class="pip-relogio-display"></div>
+                    <div id="pip-alarms"></div>
+                    <div id="pip-timers"></div>
+                </div>
+            `;
+            state.pipUpdateInterval = setInterval(updatePipDashboard, 500);
+            pipWindow.addEventListener('pagehide', () => {
+                if(state.pipUpdateInterval) clearInterval(state.pipUpdateInterval);
+                state.pipUpdateInterval = null;
+                state.pipWindow = null;
+            });
+        } catch (error) {
+            console.error("Erro ao abrir Picture-in-Picture:", error);
+            state.pipWindow = null;
+        }
+    }
+
+    // --- LÓGICA DOS TIMERS ---
+    function createTimerCard(id, name, type, soundUrl, initialSeconds = 0, soundName = '') {
+        document.getElementById('timers-section').style.display = 'block';
+        const card = document.createElement('div');
+        card.className = `card ${type === 'temp' ? 'timer-card' : 'cron-card'}`;
+        card.id = `timer-${id}`;
+        const defaultTitle = type === 'temp' ? `Temporizador #${id}` : `Cronômetro #${id}`;
+        card.innerHTML = `<h3>${name || defaultTitle}</h3><div class="display" id="display-${id}">00:00:00</div><div class="button-group"><button class="start-btn success">Iniciar</button><button class="stop-btn warning">Parar</button><button class="remove-btn danger">Remover</button></div>`;
+        activeTimersContainer.appendChild(card);
+        const display = card.querySelector('.display');
+        
+        state.timers[id] = { id, name, type, soundUrl, soundName, initialSeconds, interval: null, startTime: 0, endTime:0, elapsedTime: 0, running: false, displayElement: display };
+
+        if (type === 'temp') { display.textContent = formatTime(initialSeconds); }
+
+        card.querySelector('.start-btn').onclick = () => startTimer(id);
+        card.querySelector('.stop-btn').onclick = () => stopTimer(id, true);
+        card.querySelector('.remove-btn').onclick = () => removeTimer(id);
+    }
+
+    function startTimer(id) {
+        const timer = state.timers[id];
+        if (!timer || timer.running) return;
+        timer.running = true;
+        timer.startTime = Date.now();
+
+        if (timer.type === 'cron') {
+            timer.interval = setInterval(() => {
+                const totalElapsedTime = timer.elapsedTime + (Date.now() - timer.startTime);
+                timer.displayElement.textContent = formatTime(totalElapsedTime / 1000);
+            }, 100);
+        } else {
+            const remainingMillis = (timer.initialSeconds * 1000) - timer.elapsedTime;
+            timer.endTime = Date.now() + remainingMillis;
+            timer.interval = setInterval(() => {
+                const remaining = timer.endTime - Date.now();
+                if (remaining >= 0) {
+                    timer.displayElement.textContent = formatTime(remaining / 1000);
+                } else {
+                    timer.displayElement.textContent = "Finalizado!";
+                    timer.displayElement.style.color = '#dc3545';
+                    showNotification("Temporizador Finalizado", `Timer "${timer.name || timer.id}" finalizado!`);
+                    playSound(timer.soundUrl);
+                    stopTimer(id);
+                }
+            }, 100);
+        }
+    }
+    
+    function stopTimer(id, userStopped = false) {
+        const timer = state.timers[id]; if (!timer || !timer.running) return;
+        clearInterval(timer.interval);
+        timer.running = false;
+        timer.elapsedTime += Date.now() - timer.startTime;
+        saveState();
+        
+        if (userStopped && timer.type === 'cron') { showNotification("Cronômetro Parado", `Cronômetro "${timer.name || timer.id}" parado.`); playSound(timer.soundUrl); }
+    }
+    
+    function removeTimer(id) {
+        const timer = state.timers[id];
+        if (!timer) return;
+        stopTimer(id);
+        const card = document.getElementById(`timer-${id}`);
+        if(card) card.remove();
+        delete state.timers[id];
+        if (Object.keys(state.timers).length === 0) document.getElementById('timers-section').style.display = 'none';
+        saveState();
+    }
+
+    // --- LÓGICA DOS DESPERTADORES ---
+    function createAlarmCard(id, name, alarmDate, soundUrl, soundName) {
+        document.getElementById('alarms-section').style.display = 'block';
+        const card = document.createElement('div'); card.className = 'card alarm-card'; card.id = `alarm-${id}`;
+        const title = name || `Despertador #${id}`;
+        card.innerHTML = `<h3>${title}</h3><div class="display" style="font-size: 2rem;">${alarmDate.toLocaleTimeString('pt-BR')}</div><div id="status-${id}" style="font-weight: bold; color: #28a745;">Ativado</div><div class="button-group"><button class="remove-btn danger">Remover</button></div>`;
+        activeAlarmsContainer.appendChild(card);
+        const statusEl = card.querySelector(`#status-${id}`);
+        const interval = setInterval(() => {
+            if (new Date() >= alarmDate) {
+                clearInterval(interval); statusEl.textContent = "Disparado!"; statusEl.style.color = '#dc3545';
+                showNotification("Despertador!", `Alarme "${name || id}" disparado!`); playSound(soundUrl);
+                delete state.alarms[id]; saveState();
+            }
+        }, 1000);
+        state.alarms[id] = { id, name, alarmTime: alarmDate, soundUrl, soundName, interval };
+        card.querySelector('.remove-btn').onclick = () => {
+            clearInterval(state.alarms[id].interval); card.remove(); delete state.alarms[id];
+            if (Object.keys(state.alarms).length === 0) document.getElementById('alarms-section').style.display = 'none';
+            saveState();
+        };
+    }
+    
+    // --- EVENT LISTENERS ---
+    document.getElementById('add-temporizador').onclick = () => {
+        const name = document.getElementById('timer-name-input').value;
+        const totalSeconds = (parseInt(document.getElementById('temp-hours').value)||0)*3600 + (parseInt(document.getElementById('temp-minutes').value)||0)*60 + (parseInt(document.getElementById('temp-seconds').value)||0);
+        const selector = document.getElementById('timer-sound-creator');
+        const soundUrl = selector.value;
+        const soundName = selector.options[selector.selectedIndex].text;
+        if (totalSeconds > 0) { createTimerCard(state.nextTimerId++, name, 'temp', soundUrl, totalSeconds, soundName); saveState(); }
+    };
+    document.getElementById('add-cronometro').onclick = () => {
+        const name = document.getElementById('timer-name-input').value;
+        const selector = document.getElementById('timer-sound-creator');
+        const soundUrl = selector.value;
+        const soundName = selector.options[selector.selectedIndex].text;
+        createTimerCard(state.nextTimerId++, name, 'cron', soundUrl, 0, soundName); saveState();
+    };
+    document.getElementById('add-despertador').onclick = () => {
+        const name = document.getElementById('alarm-name-input').value;
+        const timeInput = document.getElementById('desp-time-input').value;
+        const selector = document.getElementById('desp-sound-creator');
+        const soundUrl = selector.value;
+        const soundName = selector.options[selector.selectedIndex].text;
+        if (timeInput) {
+            const [h,m,s] = timeInput.split(':'); const now = new Date(); const alarmDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, s || 0);
+            if (alarmDate < now) alarmDate.setDate(alarmDate.getDate() + 1);
+            createAlarmCard(state.nextAlarmId++, name, alarmDate, soundUrl, soundName); saveState();
+        }
+    };
+    document.getElementById('sound-files').onchange = async (event) => {
+        const files = event.target.files;
+        for (const file of files) { await saveSoundToDB(file); }
+        const allSounds = await getSoundsFromDB();
+        state.sounds.forEach(s => URL.revokeObjectURL(s.url));
+        state.sounds = allSounds.map(s => ({ name: s.name, url: URL.createObjectURL(s.file) }));
+        updateSoundSelectors();
+    };
+
+    function updateSoundSelectors() {
+        const selectors = document.querySelectorAll('.sound-selector');
+        selectors.forEach(selector => {
+            selector.innerHTML = '<option value="">Nenhum (silencioso)</option>';
+            state.sounds.forEach(sound => {
+                selector.innerHTML += `<option value="${sound.url}">${sound.name}</option>`;
+            });
+        });
+    }
+
+    function setupTimerPresetButtons() {
+        const container = document.getElementById('preset-times-container');
+        const presets = ['5m', '10m', '15m', '20m', '25m', '30m', '45m', '1h', '2h', '3h'];
+        const hInput = document.getElementById('temp-hours');
+        const mInput = document.getElementById('temp-minutes');
+        const sInput = document.getElementById('temp-seconds');
+
+        presets.forEach(preset => {
+            const btn = document.createElement('button');
+            btn.className = 'preset-btn';
+            btn.textContent = preset;
+            btn.onclick = () => {
+                let hours = 0; let minutes = 0;
+                if (preset.includes('m')) { minutes = parseInt(preset.replace('m', '')); } 
+                else if (preset.includes('h')) { hours = parseInt(preset.replace('h', '')); }
+                hInput.value = hours; mInput.value = minutes; sInput.value = 0;
+            };
+            container.appendChild(btn);
+        });
+    }
+
+    function setupAlarmPresetButtons() {
+        const container = document.getElementById('alarm-preset-times-container');
+        const presets = ['07:00', '08:00', '09:00', '12:00', '18:00', '22:00'];
+        const timeInput = document.getElementById('desp-time-input');
+
+        presets.forEach(preset => {
+            const btn = document.createElement('button');
+            btn.className = 'preset-btn';
+            btn.textContent = preset;
+            btn.onclick = () => { timeInput.value = preset; };
+            container.appendChild(btn);
+        });
+    }
+
+    // --- INICIALIZAÇÃO DA APLICAÇÃO ---
+    window.onload = async () => {
+        startRelogio();
+        setupTimerPresetButtons();
+        setupAlarmPresetButtons();
+        Notification.requestPermission();
+        
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        const togglePipBtn = document.getElementById('toggle-pip-btn');
+        
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.className = savedTheme === 'dark' ? 'dark-theme' : '';
+        themeToggleBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+        themeToggleBtn.onclick = () => {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            themeToggleBtn.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            if (state.pipWindow && !state.pipWindow.closed) {
+                state.pipWindow.document.body.className = document.body.className;
+            }
+        };
+
+        if (!('documentPictureInPicture' in window)) {
+            togglePipBtn.disabled = true;
+            togglePipBtn.title = 'Seu navegador não suporta esta funcionalidade.';
+        } else {
+            togglePipBtn.onclick = togglePipDashboard;
+        }
+
+        await initDB();
+        await loadState();
+        setInterval(saveState, 5000);
+    };
+    window.addEventListener('beforeunload', saveState);
+    const activeTimersContainer = document.getElementById('active-timers-container');
+    const activeAlarmsContainer = document.getElementById('active-alarms-container');
+
+</script>
+
+</body>
+</html>
