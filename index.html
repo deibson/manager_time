@@ -207,9 +207,15 @@
             background-color: var(--primary-color);
             border-radius: 4px;
         }
+        .status-message {
+            font-size: 1rem;
+            margin-top: 5px;
+            font-weight: 500;
+            color: var(--danger-color);
+        }
     </style>
 </head>
-    <body>    
+    <body>        
         <div class="dashboard-container">
             <div class="card relogio-card">
                 <h3 id="date-display"></h3>
@@ -387,7 +393,7 @@
                     if (timer.running) {
                          currentElapsedTime += Date.now() - timer.startTime;
                     }
-                    stateToSave.timers[id] = { id: timer.id, name: timer.name, type: timer.type, soundName: timer.soundName, initialSeconds: timer.initialSeconds, elapsedTime: currentElapsedTime, running: timer.running, isSounding: timer.isSounding };
+                    stateToSave.timers[id] = { id: timer.id, name: timer.name, type: timer.type, soundName: timer.soundName, initialSeconds: timer.initialSeconds, targetSeconds: timer.targetSeconds, elapsedTime: currentElapsedTime, running: timer.running, isSounding: timer.isSounding };
                 }
                 for (const id in state.alarms) {
                     const alarm = state.alarms[id];
@@ -411,7 +417,7 @@
                     for (const id in parsedState.timers) {
                         const savedTimer = parsedState.timers[id];
                         const sound = state.sounds.find(s => s.name === savedTimer.soundName);
-                        createTimerCard(savedTimer.id, savedTimer.name, savedTimer.type, sound ? sound.url : '', savedTimer.initialSeconds, savedTimer.soundName);
+                        createTimerCard(savedTimer.id, savedTimer.name, savedTimer.type, sound ? sound.url : '', savedTimer.initialSeconds || (savedTimer.type === 'temp' ? savedTimer.targetSeconds : 0), savedTimer.soundName);
         
                         const timer = state.timers[id];
                         timer.elapsedTime = savedTimer.elapsedTime;
@@ -420,8 +426,10 @@
                         const cardAudioPlayer = card.querySelector('.card-audio-player');
         
                         if (savedTimer.type === 'temp' && (timer.elapsedTime >= timer.initialSeconds * 1000 || savedTimer.isSounding)) {
-                            timer.displayElement.textContent = "Finalizado!";
+                            timer.displayElement.textContent = formatTime(timer.initialSeconds);
                             timer.displayElement.style.color = '#dc3545';
+                            card.querySelector('.status-message').textContent = 'Finalizado!';
+                            card.querySelector('.status-message').style.display = 'block';
                             timer.running = false;
                             card.querySelector('.start-btn').style.display = 'none';
                             card.querySelector('.stop-btn').style.display = 'none';
@@ -522,14 +530,30 @@
                     for (const id in state.timers) {
                         const timer = state.timers[id];
                         const title = timer.name || (timer.type === 'temp' ? `Temporizador #${id}`: `Cronômetro #${id}`);
-                        let controlsHtml = '';
-                        const isFinished = timer.type === 'temp' && timer.elapsedTime >= timer.initialSeconds * 1000 && !timer.running;
+                        const card = document.getElementById(`timer-${id}`);
+                        const statusMessage = card.querySelector('.status-message').textContent;
         
-                        if(timer.isSounding){
-                            controlsHtml = `<button class="pip-btn pip-stop-sound-btn-timer" data-id="${id}" style="background:#ea4335;width:auto;padding:0 8px;">Parar Som</button>
-                                          <button class="pip-btn pip-reset-btn" data-id="${id}" title="Resetar">↻</button>`;
-                        } else if(isFinished){
-                             controlsHtml = `<button class="pip-btn pip-reset-btn" data-id="${id}" title="Resetar">↻</button>
+                        let controlsHtml = '';
+                        const isFinishedTemp = timer.type === 'temp' && !timer.running && timer.elapsedTime > 0 && timer.elapsedTime >= timer.initialSeconds * 1000;
+                         const isTargetReachedCron = timer.type === 'cron' && timer.targetReached;
+                        
+                        let timeDisplay = timer.displayElement.textContent;
+                        let statusHtml = statusMessage ? `<span class="pip-status">${statusMessage}</span>` : '';
+        
+                        if (isFinishedTemp) {
+                            if (timer.isSounding) {
+                                controlsHtml = `<button class="pip-btn pip-stop-sound-btn-timer" data-id="${id}" style="background:#ea4335;width:auto;padding:0 8px;">Parar Som</button>
+                                              <button class="pip-btn pip-reset-btn" data-id="${id}" title="Resetar">↻</button>`;
+                            } else {
+                                controlsHtml = `<button class="pip-btn pip-reset-btn" data-id="${id}" title="Resetar">↻</button>
+                                              <button class="pip-btn pip-remove-btn" data-id="${id}">×</button>`;
+                            }
+                        } else if (isTargetReachedCron) {
+                             controlsHtml = '';
+                            if (timer.isSounding) {
+                                controlsHtml += `<button class="pip-btn pip-stop-sound-btn-timer" data-id="${id}" style="background:#ea4335;width:auto;padding:0 8px;">Parar Som</button>`;
+                            }
+                            controlsHtml += `<button class="pip-btn pip-reset-btn" data-id="${id}" title="Resetar">↻</button>
                                              <button class="pip-btn pip-remove-btn" data-id="${id}">×</button>`;
                         } else {
                             controlsHtml = `
@@ -542,7 +566,8 @@
                             <div class="item timer ${timer.running ? 'running' : ''}">
                                 <div class="info">
                                     <span>${title}</span>
-                                    <strong>${timer.displayElement.textContent}</strong>
+                                    <strong>${timeDisplay}</strong>
+                                    ${statusHtml}
                                 </div>
                                 <div class="controls">${controlsHtml}</div>
                             </div>`;
@@ -572,7 +597,7 @@
                     pipDocument.body.className = document.body.className;
                     pipDocument.body.innerHTML = `
                         <style>
-                            :root { --pip-bg: #1e1e1e; --pip-text: #e0e0e0; --pip-heading: #00aaff; --pip-border: #444; --pip-item-bg: #333; }
+                            :root { --pip-bg: #1e1e1e; --pip-text: #e0e0e0; --pip-heading: #00aaff; --pip-border: #444; --pip-item-bg: #333; --pip-danger: #ea4335; }
                             body.light-theme { --pip-bg: #f0f2f5; --pip-text: #333; --pip-heading: #007bff; --pip-border: #dee2e6; --pip-item-bg: #fff; }
                             body { margin: 0; background-color: var(--pip-bg); color: var(--pip-text); font-family: 'Poppins', sans-serif; font-size: 14px; }
                             .pip-dashboard { padding: 15px; height: 100%; overflow-y: auto; box-sizing: border-box; }
@@ -585,6 +610,7 @@
                             .info span { font-size: 12px; opacity: 0.8; }
                             .info strong { font-family: monospace; font-size: 18px; }
                             .info strong.time { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; }
+                            .pip-status { font-size: 12px; font-weight: 500; color: var(--pip-danger); }
                             .controls { display: flex; gap: 5px; }
                             .pip-btn { background: #555; color: white; border: none; border-radius: 5px; width: 28px; height: 28px; cursor: pointer; font-size: 14px; line-height: 28px; text-align: center; }
                             .pip-btn:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -624,10 +650,12 @@
                 timer.elapsedTime = 0;
                 timer.running = false;
                 timer.isSounding = false;
+                timer.targetReached = false;
                 
                 if (card) {
-                    timer.displayElement.textContent = formatTime(timer.initialSeconds);
+                    timer.displayElement.textContent = timer.type === 'cron' ? formatTime(0) : formatTime(timer.initialSeconds);
                     timer.displayElement.style.color = '';
+                    card.querySelector('.status-message').style.display = 'none';
                     card.querySelector('.start-btn').style.display = 'inline-block';
                     card.querySelector('.stop-btn').style.display = 'inline-block';
                     card.querySelector('.remove-btn').style.display = 'inline-block';
@@ -643,13 +671,14 @@
                 card.className = `card ${type === 'temp' ? 'timer-card' : 'cron-card'}`;
                 card.id = `timer-${id}`;
                 const defaultTitle = type === 'temp' ? `Temporizador #${id}` : `Cronômetro #${id}`;
-                card.innerHTML = `<h3>${name || defaultTitle}</h3><div class="display" id="display-${id}">00:00:00</div><div class="button-group"><button class="start-btn success">Iniciar</button><button class="stop-btn warning">Parar</button><button class="remove-btn danger">Remover</button><button class="reset-btn" style="display:none;">Resetar</button><button class="stop-sound-btn danger" style="display:none;">Parar Som</button></div><audio class="card-audio-player" style="display: none;"></audio>`;
+                card.innerHTML = `<h3>${name || defaultTitle}</h3><div class="display" id="display-${id}">00:00:00</div><div class="status-message" style="display: none;"></div><div class="button-group"><button class="start-btn success">Iniciar</button><button class="stop-btn warning">Parar</button><button class="remove-btn danger">Remover</button><button class="reset-btn" style="display:none;">Resetar</button><button class="stop-sound-btn danger" style="display:none;">Parar Som</button></div><audio class="card-audio-player" style="display: none;"></audio>`;
                 activeTimersContainer.appendChild(card);
                 
                 const display = card.querySelector('.display');
                 const cardAudioPlayer = card.querySelector('.card-audio-player');
                 
-                state.timers[id] = { id, name, type, soundUrl, soundName, initialSeconds, interval: null, startTime: 0, endTime:0, elapsedTime: 0, running: false, isSounding: false, displayElement: display };
+                const isCron = type === 'cron';
+                state.timers[id] = { id, name, type, soundUrl, soundName, initialSeconds: isCron ? 0 : initialSeconds, targetSeconds: isCron ? initialSeconds : 0, targetReached: false, interval: null, startTime: 0, endTime:0, elapsedTime: 0, running: false, isSounding: false, displayElement: display };
         
                 if (type === 'temp') { display.textContent = formatTime(initialSeconds); }
         
@@ -669,13 +698,32 @@
                 if (!timer || timer.running) return;
                 timer.running = true;
                 timer.startTime = Date.now();
+                const card = document.getElementById(`timer-${id}`);
+                const cardAudioPlayer = card.querySelector('.card-audio-player');
         
                 if (timer.type === 'cron') {
                     timer.interval = setInterval(() => {
                         const totalElapsedTime = timer.elapsedTime + (Date.now() - timer.startTime);
                         timer.displayElement.textContent = formatTime(totalElapsedTime / 1000);
+        
+                        if (timer.targetSeconds > 0 && (totalElapsedTime / 1000) >= timer.targetSeconds && !timer.targetReached) {
+                            timer.targetReached = true;
+                            timer.displayElement.style.color = '#dc3545';
+                            showNotification("Cronômetro Atingiu o Alvo", `Cronômetro "${timer.name || timer.id}" atingiu ${formatTime(timer.targetSeconds)}!`);
+                            playSound(cardAudioPlayer, timer.soundUrl, true); 
+                            timer.isSounding = true;
+                            if(card) {
+                                card.querySelector('.status-message').textContent = 'Alvo Atingido!';
+                                card.querySelector('.status-message').style.display = 'block';
+                                card.querySelector('.start-btn').style.display = 'none';
+                                card.querySelector('.stop-btn').style.display = 'none';
+                                card.querySelector('.remove-btn').style.display = 'inline-block';
+                                card.querySelector('.stop-sound-btn').style.display = 'inline-block';
+                                card.querySelector('.reset-btn').style.display = 'inline-block';
+                            }
+                        }
                     }, 100);
-                } else {
+                } else { // type === 'temp'
                     const remainingMillis = (timer.initialSeconds * 1000) - timer.elapsedTime;
                     timer.endTime = Date.now() + remainingMillis;
                     timer.interval = setInterval(() => {
@@ -683,17 +731,17 @@
                         if (remaining >= 0) {
                             timer.displayElement.textContent = formatTime(remaining / 1000);
                         } else {
-                            timer.displayElement.textContent = "Finalizado!";
+                            timer.displayElement.textContent = formatTime(timer.initialSeconds);
                             timer.displayElement.style.color = '#dc3545';
                             showNotification("Temporizador Finalizado", `Timer "${timer.name || timer.id}" finalizado!`);
                             
-                            const card = document.getElementById(`timer-${id}`);
-                            const cardAudioPlayer = card.querySelector('.card-audio-player');
                             playSound(cardAudioPlayer, timer.soundUrl, true);
                             
                             timer.isSounding = true;
                             stopTimer(id);
                             if (card) {
+                                card.querySelector('.status-message').textContent = 'Finalizado!';
+                                card.querySelector('.status-message').style.display = 'block';
                                 card.querySelector('.start-btn').style.display = 'none';
                                 card.querySelector('.stop-btn').style.display = 'none';
                                 card.querySelector('.stop-sound-btn').style.display = 'inline-block';
@@ -711,7 +759,7 @@
                 timer.elapsedTime += Date.now() - timer.startTime;
                 saveState();
                 
-                if (userStopped && timer.type === 'cron') { 
+                if (userStopped && timer.type === 'cron' && timer.targetSeconds > 0) { 
                     showNotification("Cronômetro Parado", `Cronômetro "${timer.name || timer.id}" parado.`);
                     const card = document.getElementById(`timer-${id}`);
                     const cardAudioPlayer = card.querySelector('.card-audio-player');
@@ -861,10 +909,11 @@
             };
             document.getElementById('add-cronometro').onclick = () => {
                 const name = document.getElementById('timer-name-input').value;
+                const totalSeconds = (parseInt(document.getElementById('temp-hours').value)||0)*3600 + (parseInt(document.getElementById('temp-minutes').value)||0)*60 + (parseInt(document.getElementById('temp-seconds').value)||0);
                 const selector = document.getElementById('timer-sound-creator');
                 const soundUrl = selector.value;
                 const soundName = selector.options[selector.selectedIndex].text;
-                createTimerCard(state.nextTimerId++, name, 'cron', soundUrl, 0, soundName); saveState();
+                createTimerCard(state.nextTimerId++, name, 'cron', soundUrl, totalSeconds, soundName); saveState();
             };
             document.getElementById('add-despertador').onclick = () => {
                 const name = document.getElementById('alarm-name-input').value;
@@ -948,6 +997,24 @@
                 if ("Notification" in window && Notification.permission === "default") {
                     Notification.requestPermission();
                 }
+        
+                // Desbloqueia o áudio no primeiro toque/clique do usuário (essencial para mobile)
+                let isAudioUnlocked = false;
+                const unlockMainAudio = () => {
+                    if (isAudioUnlocked) return;
+                    previewAudioPlayer.play().catch(() => {});
+                    previewAudioPlayer.pause();
+                    previewAudioPlayer.currentTime = 0;
+                    musicPlayer.play().catch(() => {});
+                    musicPlayer.pause();
+                    musicPlayer.currentTime = 0;
+                    
+                    isAudioUnlocked = true;
+                    document.body.removeEventListener('click', unlockMainAudio);
+                    document.body.removeEventListener('touchend', unlockMainAudio);
+                };
+                document.body.addEventListener('click', unlockMainAudio);
+                document.body.addEventListener('touchend', unlockMainAudio);
                 
                 const themeToggleBtn = document.getElementById('theme-toggle-btn');
                 const togglePipBtn = document.getElementById('toggle-pip-btn');
@@ -961,14 +1028,18 @@
                 musicPlayer.addEventListener('ended', playNext);
                 musicPlayer.addEventListener('timeupdate', () => {
                     const { duration, currentTime } = musicPlayer;
-                    const progressPercent = (currentTime / duration) * 100;
-                    progressBar.style.width = `${progressPercent}%`;
+                    if (duration) {
+                        const progressPercent = (currentTime / duration) * 100;
+                        progressBar.style.width = `${progressPercent}%`;
+                    }
                 });
                 progressContainer.onclick = (e) => {
                     const width = progressContainer.clientWidth;
                     const clickX = e.offsetX;
                     const duration = musicPlayer.duration;
-                    musicPlayer.currentTime = (clickX / width) * duration;
+                    if (duration) {
+                        musicPlayer.currentTime = (clickX / width) * duration;
+                    }
                 };
                 playlistContainer.addEventListener('click', (e) => {
                     if (e.target.classList.contains('playlist-item')) {
@@ -1005,9 +1076,7 @@
             };
             window.addEventListener('beforeunload', saveState);
             const activeTimersContainer = document.getElementById('active-timers-container');
-            const activeAlarmsContainer = document.getElementById('active-alarms-container');
-        
+            const activeAlarmsContainer = document.getElementById('active-alarms-container');        
         </script>
     </body>
 </html>
-
