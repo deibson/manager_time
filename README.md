@@ -1,5 +1,7 @@
 # Manager Time: Painel de Gerenciamento de Tempo com Picture-in-Picture
 
+**PAGE**: https://deibson.github.io/manager_time/
+
 Manager Time é uma ferramenta completa para gerenciamento de tempo, desenvolvida para rodar diretamente no seu navegador. Ele oferece um conjunto de funcionalidades para ajudar você a se manter organizado, focado e dentro do prazo. De um simples relógio a múltiplos alarmes e temporizadores, esta ferramenta permite aos usuários que precisam de um hub centralizado para suas tarefas relacionadas ao tempo.
 
 Um dos principais diferenciais é o inovador modo **"Painel Flutuante" (Picture-in-Picture)**, que permite que você monitore seus timers e alarmes enquanto trabalha em outras aplicações. Todas as suas configurações e timers ativos são salvos localmente no navegador, garantindo que suas sessões persistam mesmo que você feche a aba.
