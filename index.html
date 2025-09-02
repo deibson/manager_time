@@ -1,221 +1,227 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manager Time</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* CSS completo com melhorias visuais e temas */
-        :root {
-            --bg-color: #f4f7fc;
-            --card-bg-color: #ffffff;
-            --text-color: #344767;
-            --heading-color: #344767;
-            --primary-color: #007bff;
-            --primary-hover-color: #0056b3;
-            --danger-color: #ea4335;
-            --danger-hover-color: #c82333;
-            --success-color: #34a853;
-            --success-hover-color: #2c8c42;
-            --warning-color: #fbbc05;
-            --warning-hover-color: #d69e04;
-            --border-color: #e0e6f0;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --font-family: 'Poppins', sans-serif;
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Manager Time</title>
+        <!-- PWA Tags -->
+        <link rel="manifest" href="manifest.json">
+        <meta name="theme-color" content="#007bff">
+        <link rel="apple-touch-icon" href="https://placehold.co/192x192/007bff/ffffff?text=MT">
+        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            /* CSS completo com melhorias visuais e temas */
+            :root {
+                --bg-color: #f4f7fc;
+                --card-bg-color: #ffffff;
+                --text-color: #344767;
+                --heading-color: #344767;
+                --primary-color: #007bff;
+                --primary-hover-color: #0056b3;
+                --danger-color: #ea4335;
+                --danger-hover-color: #c82333;
+                --success-color: #34a853;
+                --success-hover-color: #2c8c42;
+                --warning-color: #fbbc05;
+                --warning-hover-color: #d69e04;
+                --border-color: #e0e6f0;
+                --shadow-color: rgba(0, 0, 0, 0.08);
+                --font-family: 'Poppins', sans-serif;
+            }
 
-        body.dark-theme {
-            --bg-color: #1a1a1a;
-            --card-bg-color: #2a2a2a;
-            --text-color: #e0e0e0;
-            --heading-color: #ffffff;
-            --primary-color: #00aaff;
-            --primary-hover-color: #007ecc;
-            --border-color: #444;
-            --shadow-color: rgba(0, 0, 0, 0.4);
-        }
+            body.dark-theme {
+                --bg-color: #1a1a1a;
+                --card-bg-color: #2a2a2a;
+                --text-color: #e0e0e0;
+                --heading-color: #ffffff;
+                --primary-color: #00aaff;
+                --primary-hover-color: #007ecc;
+                --border-color: #444;
+                --shadow-color: rgba(0, 0, 0, 0.4);
+            }
 
-        body {
-            font-family: var(--font-family);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 20px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        
-        .dashboard-container { max-width: 1200px; margin: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 25px; }
-        
-        .card {
-            background-color: var(--card-bg-color);
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px var(--shadow-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border-top: 4px solid var(--primary-color);
-            transition: all 0.3s ease;
-        }
-        
-        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px var(--shadow-color); }
-        .card h3 { margin-top: 0; font-size: 1.25rem; font-weight: 600; color: var(--heading-color); }
-        .relogio-card { grid-column: 1 / -1; text-align: center; border-top-color: transparent; }
-        .relogio-display { font-size: 5rem; font-weight: 700; line-height: 1; color: var(--primary-color); }
-        .display { font-size: 2.75rem; font-weight: 600; margin: 10px 0; }
-        
-        .button-group { display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-        
-        button, select, input {
-            padding: 10px 18px;
-            font-size: 14px;
-            font-family: var(--font-family);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            background-color: transparent;
-            color: var(--text-color);
-            transition: all 0.2s ease;
-        }
+            body {
+                font-family: var(--font-family);
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                padding: 20px;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+            
+            .dashboard-container { max-width: 1200px; margin: auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 25px; }
+            
+            .card {
+                background-color: var(--card-bg-color);
+                padding: 25px;
+                border-radius: 16px;
+                box-shadow: 0 8px 25px var(--shadow-color);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                border-top: 4px solid var(--primary-color);
+                transition: all 0.3s ease;
+            }
+            
+            .card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px var(--shadow-color); }
+            .card h3 { margin-top: 0; font-size: 1.25rem; font-weight: 600; color: var(--heading-color); }
+            .relogio-card { grid-column: 1 / -1; text-align: center; border-top-color: transparent; }
+            .relogio-display { font-size: 5rem; font-weight: 700; line-height: 1; color: var(--primary-color); }
+            .display { font-size: 2.75rem; font-weight: 600; margin: 10px 0; }
+            
+            .button-group { display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+            
+            button, select, input {
+                padding: 10px 18px;
+                font-size: 14px;
+                font-family: var(--font-family);
+                border-radius: 8px;
+                border: 1px solid var(--border-color);
+                cursor: pointer;
+                background-color: transparent;
+                color: var(--text-color);
+                transition: all 0.2s ease;
+            }
 
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent);
-        }
-        
-        input { width: 100%; box-sizing: border-box; }
-        input[type="time"], input[type="number"] { text-align: center; }
-        
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            font-weight: 500;
-        }
+            input:focus, select:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent);
+            }
+            
+            input { width: 100%; box-sizing: border-box; }
+            input[type="time"], input[type="number"] { text-align: center; }
+            
+            button {
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                font-weight: 500;
+            }
 
-        button:hover { background-color: var(--primary-hover-color); transform: scale(1.05); }
-        button.danger { background-color: var(--danger-color); }
-        button.danger:hover { background-color: var(--danger-hover-color); }
-        button.success { background-color: var(--success-color); }
-        button.success:hover { background-color: var(--success-hover-color); }
-        button.warning { background-color: var(--warning-color); color: #333;}
-        button.warning:hover { background-color: var(--warning-hover-color); }
-        button.reset-btn { background-color: transparent; color: var(--primary-color); border: 1px solid var(--primary-color);}
-        button.reset-btn:hover { background-color: var(--primary-color); color: white; }
-        button:disabled { background-color: #6c757d; cursor: not-allowed; opacity: 0.7; transform: none; }
+            button:hover { background-color: var(--primary-hover-color); transform: scale(1.05); }
+            button.danger { background-color: var(--danger-color); }
+            button.danger:hover { background-color: var(--danger-hover-color); }
+            button.success { background-color: var(--success-color); }
+            button.success:hover { background-color: var(--success-hover-color); }
+            button.warning { background-color: var(--warning-color); color: #333;}
+            button.warning:hover { background-color: var(--warning-hover-color); }
+            button.reset-btn { background-color: transparent; color: var(--primary-color); border: 1px solid var(--primary-color);}
+            button.reset-btn:hover { background-color: var(--primary-color); color: white; }
+            button:disabled { background-color: #6c757d; cursor: not-allowed; opacity: 0.7; transform: none; }
 
-        #theme-toggle-btn { font-size: 18px; padding: 5px 10px; background-color: transparent; color: var(--text-color); border: 1px solid var(--border-color); }
+            #theme-toggle-btn { font-size: 18px; padding: 5px 10px; background-color: transparent; color: var(--text-color); border: 1px solid var(--border-color); }
 
-        .timer-card { border-top-color: var(--success-color); }
-        .cron-card { border-top-color: #17a2b8; }
-        .alarm-card { border-top-color: var(--warning-color); }
-        
-        label { display: block; margin: 15px 0 8px 0; font-weight: 500; }
-        
-        .time-input-wrapper { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0; }
-        .time-input-wrapper input { width: 70px; font-size: 1.5rem; padding: 8px; }
-        .time-input-wrapper span { font-size: 1.2rem; color: var(--text-color); opacity: 0.7; }
+            .timer-card { border-top-color: var(--success-color); }
+            .cron-card { border-top-color: #17a2b8; }
+            .alarm-card { border-top-color: var(--warning-color); }
+            
+            label { display: block; margin: 15px 0 8px 0; font-weight: 500; }
+            
+            .time-input-wrapper { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0; }
+            .time-input-wrapper input { width: 70px; font-size: 1.5rem; padding: 8px; }
+            .time-input-wrapper span { font-size: 1.2rem; color: var(--text-color); opacity: 0.7; }
 
-        .preset-times { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 15px 0; }
-        .preset-btn { padding: 4px 10px !important; font-size: 12px !important; background-color: transparent !important; border: 1px solid var(--border-color) !important; color: var(--text-color) !important; }
-        .preset-btn:hover { background-color: var(--border-color) !important; color: var(--text-color) !important; transform: none; }
-        body.dark-theme .preset-btn:hover { color: var(--bg-color) !important; }
-        
-        .full-width-container { grid-column: 1 / -1; }
-        .full-width-container h2 { text-align: center; color: var(--text-color); opacity: 0.8; font-weight: 500; }
+            .preset-times { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 15px 0; }
+            .preset-btn { padding: 4px 10px !important; font-size: 12px !important; background-color: transparent !important; border: 1px solid var(--border-color) !important; color: var(--text-color) !important; }
+            .preset-btn:hover { background-color: var(--border-color) !important; color: var(--text-color) !important; transform: none; }
+            body.dark-theme .preset-btn:hover { color: var(--bg-color) !important; }
+            
+            .full-width-container { grid-column: 1 / -1; }
+            .full-width-container h2 { text-align: center; color: var(--text-color); opacity: 0.8; font-weight: 500; }
 
-        .sound-select-wrapper { display: flex; width: 100%; align-items: center; border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.2s ease; }
-        .sound-select-wrapper:focus-within { border-color: var(--primary-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent); }
-        .sound-select-wrapper select { flex-grow: 1; border: none; background-color: transparent; text-overflow: ellipsis; min-width: 0; }
-        .sound-select-wrapper select:focus { box-shadow: none; }
-        .preview-sound-btn { flex-shrink: 0; width: 44px; height: 44px; padding: 8px; border: none; background-color: transparent; color: var(--text-color); cursor: pointer; }
-        .preview-sound-btn:hover { background-color: transparent; transform: none; color: var(--primary-color); }
-        .preview-sound-btn svg { width: 100%; height: 100%; }
-        
-        body.dark-theme .sound-select-wrapper {
-            background-color: #3a3a3a;
-            border-color: #555;
-        }
+            .sound-select-wrapper { display: flex; width: 100%; align-items: center; border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.2s ease; }
+            .sound-select-wrapper:focus-within { border-color: var(--primary-color); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent); }
+            .sound-select-wrapper select { flex-grow: 1; border: none; background-color: transparent; text-overflow: ellipsis; min-width: 0; }
+            .sound-select-wrapper select:focus { box-shadow: none; }
+            .preview-sound-btn { flex-shrink: 0; width: 44px; height: 44px; padding: 8px; border: none; background-color: transparent; color: var(--text-color); cursor: pointer; }
+            .preview-sound-btn:hover { background-color: transparent; transform: none; color: var(--primary-color); }
+            .preview-sound-btn svg { width: 100%; height: 100%; }
+            
+            body.dark-theme .sound-select-wrapper {
+                background-color: #3a3a3a;
+                border-color: #555;
+            }
 
-        /* Music Player Styles */
-        #music-player-card {
-            border-top-color: #6f42c1;
-        }
-        #playlist-container {
-            width: 100%;
-            max-height: 150px;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 8px;
-            margin: 15px 0;
-        }
-        .playlist-item {
-            padding: 8px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .playlist-item:hover {
-            background-color: var(--border-color);
-        }
-        .playlist-item.active {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 500;
-        }
-        #player-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            width: 100%;
-        }
-        .player-btn {
-            background-color: transparent;
-            border: none;
-            color: var(--text-color);
-            padding: 5px;
-        }
-        .player-btn svg { width: 24px; height: 24px; }
-        .player-btn#play-pause-btn svg { width: 32px; height: 32px; }
-        #track-info {
-            text-align: center;
-            margin-top: 10px;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
-        #progress-container {
-            width: 100%;
-            height: 8px;
-            background-color: var(--border-color);
-            border-radius: 4px;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-        #progress-bar {
-            width: 0%;
-            height: 100%;
-            background-color: var(--primary-color);
-            border-radius: 4px;
-        }
-        .status-message {
-            font-size: 1rem;
-            margin-top: 5px;
-            font-weight: 500;
-            color: var(--danger-color);
-        }
-    </style>
-</head>
-    <body>        
+            /* Music Player Styles */
+            #music-player-card {
+                border-top-color: #6f42c1;
+            }
+            #playlist-container {
+                width: 100%;
+                max-height: 150px;
+                overflow-y: auto;
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                padding: 8px;
+                margin: 15px 0;
+            }
+            .playlist-item {
+                padding: 8px 10px;
+                border-radius: 6px;
+                cursor: pointer;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .playlist-item:hover {
+                background-color: var(--border-color);
+            }
+            .playlist-item.active {
+                background-color: var(--primary-color);
+                color: white;
+                font-weight: 500;
+            }
+            #player-controls {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                width: 100%;
+            }
+            .player-btn {
+                background-color: transparent;
+                border: none;
+                color: var(--text-color);
+                padding: 5px;
+            }
+            .player-btn svg { width: 24px; height: 24px; }
+            .player-btn#play-pause-btn svg { width: 32px; height: 32px; }
+            #track-info {
+                text-align: center;
+                margin-top: 10px;
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                width: 100%;
+            }
+            #progress-container {
+                width: 100%;
+                height: 8px;
+                background-color: var(--border-color);
+                border-radius: 4px;
+                cursor: pointer;
+                margin: 10px 0;
+            }
+            #progress-bar {
+                width: 0%;
+                height: 100%;
+                background-color: var(--primary-color);
+                border-radius: 4px;
+            }
+            .status-message {
+                font-size: 1rem;
+                margin-top: 5px;
+                font-weight: 500;
+                color: var(--danger-color);
+            }
+        </style>
+    </head>
+    <body>
+
         <div class="dashboard-container">
             <div class="card relogio-card">
                 <h3 id="date-display"></h3>
@@ -286,9 +292,9 @@
                 <div id="active-timers-container" class="dashboard-container"></div>
             </div>
         </div>
-        
+
         <audio id="music-player-element"></audio>
-        
+
         <script>
             // =========================================================================
             // 1. GERENCIADOR DE BANCO DE DADOS (INDEXEDDB) PARA SONS
@@ -297,7 +303,7 @@
             const DB_VERSION = 1;
             const SOUND_STORE_NAME = 'sounds';
             let db;
-        
+
             function initDB() {
                 return new Promise((resolve, reject) => {
                     const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -311,7 +317,7 @@
                     request.onerror = (event) => { console.error("Erro no IndexedDB:", event.target.errorCode); reject(event.target.errorCode); };
                 });
             }
-        
+
             function saveSoundToDB(soundFile) {
                 return new Promise((resolve, reject) => {
                     const transaction = db.transaction([SOUND_STORE_NAME], 'readwrite');
@@ -321,7 +327,7 @@
                     request.onerror = reject;
                 });
             }
-        
+
             function getSoundsFromDB() {
                 return new Promise((resolve, reject) => {
                     if (!db) { return resolve([]); }
@@ -332,7 +338,7 @@
                     request.onerror = reject;
                 });
             }
-        
+
             // =========================================================================
             // 2. LÓGICA PRINCIPAL DA APLICAÇÃO
             // =========================================================================
@@ -342,9 +348,10 @@
                 musicPlayer: {
                     isPlaying: false,
                     currentTrackIndex: -1
-                }
+                },
+                lastVisible: document.visibilityState
             };
-        
+
             // --- FUNÇÕES UTILITÁRIAS ---
             const previewAudioPlayer = new Audio();
             function previewSound(soundUrl) { if (soundUrl) { previewAudioPlayer.src = soundUrl; previewAudioPlayer.play().catch(e => console.error("Erro ao tocar preview:", e)); } }
@@ -365,7 +372,7 @@
                     audioElement.src = ''; 
                 } 
             }
-        
+
             function showNotification(title, message) { 
                 if (!("Notification" in window)) {
                     alert(message);
@@ -401,30 +408,30 @@
                 }
                 localStorage.setItem('timerDashboardState', JSON.stringify(stateToSave));
             }
-        
+
             async function loadState() {
                 const savedSounds = await getSoundsFromDB();
                 state.sounds = savedSounds.map(s => ({ name: s.name, url: URL.createObjectURL(s.file) }));
                 updateSoundSelectors();
                 renderPlaylist();
-        
+
                 const savedState = localStorage.getItem('timerDashboardState');
                 if (savedState) {
                     const parsedState = JSON.parse(savedState);
                     state.nextTimerId = parsedState.nextTimerId || 0;
                     state.nextAlarmId = parsedState.nextAlarmId || 0;
-        
+
                     for (const id in parsedState.timers) {
                         const savedTimer = parsedState.timers[id];
                         const sound = state.sounds.find(s => s.name === savedTimer.soundName);
                         createTimerCard(savedTimer.id, savedTimer.name, savedTimer.type, sound ? sound.url : '', savedTimer.initialSeconds || (savedTimer.type === 'temp' ? savedTimer.targetSeconds : 0), savedTimer.soundName);
-        
+
                         const timer = state.timers[id];
                         timer.elapsedTime = savedTimer.elapsedTime;
                         
                         const card = document.getElementById(`timer-${id}`);
                         const cardAudioPlayer = card.querySelector('.card-audio-player');
-        
+
                         if (savedTimer.type === 'temp' && (timer.elapsedTime >= timer.initialSeconds * 1000 || savedTimer.isSounding)) {
                             timer.displayElement.textContent = formatTime(timer.initialSeconds);
                             timer.displayElement.style.color = '#dc3545';
@@ -459,7 +466,7 @@
                         
                         const card = document.getElementById(`alarm-${id}`);
                         const cardAudioPlayer = card.querySelector('.card-audio-player');
-        
+
                         if (savedAlarm.isSounding){
                             const alarm = state.alarms[id];
                             alarm.isSounding = true;
@@ -470,7 +477,7 @@
                     }
                 }
             }
-        
+
             // =========================================================================
             // 4. LÓGICA DE PICTURE-IN-PICTURE (Dashboard Interativo)
             // =========================================================================
@@ -479,7 +486,7 @@
                 if (card) {
                     const cardAudioPlayer = card.querySelector('.card-audio-player');
                     stopSound(cardAudioPlayer);
-        
+
                     if (type === 'timer' && state.timers[id]) {
                         state.timers[id].isSounding = false;
                         card.querySelector('.stop-sound-btn').style.display = 'none';
@@ -495,7 +502,7 @@
                 resetTimer(id);
                 updatePipDashboard();
             }
-        
+
             function updatePipDashboard() {
                 if (!state.pipWindow || state.pipWindow.closed) {
                     if (state.pipUpdateInterval) clearInterval(state.pipUpdateInterval);
@@ -503,7 +510,7 @@
                     state.pipWindow = null;
                     return;
                 }
-        
+
                 const pipDoc = state.pipWindow.document;
                 pipDoc.getElementById('pip-relogio').textContent = new Date().toLocaleTimeString('pt-BR');
                 
@@ -523,7 +530,7 @@
                     alarmsHtml += '<div class="item">Nenhum alarme ativo</div>';
                 }
                 alarmsContainer.innerHTML = alarmsHtml;
-        
+
                 const timersContainer = pipDoc.getElementById('pip-timers');
                 let timersHtml = '<h4>Timers</h4>';
                 if (Object.keys(state.timers).length > 0) {
@@ -532,14 +539,14 @@
                         const title = timer.name || (timer.type === 'temp' ? `Temporizador #${id}`: `Cronômetro #${id}`);
                         const card = document.getElementById(`timer-${id}`);
                         const statusMessage = card.querySelector('.status-message').textContent;
-        
+
                         let controlsHtml = '';
                         const isFinishedTemp = timer.type === 'temp' && !timer.running && timer.elapsedTime > 0 && timer.elapsedTime >= timer.initialSeconds * 1000;
                          const isTargetReachedCron = timer.type === 'cron' && timer.targetReached;
                         
                         let timeDisplay = timer.displayElement.textContent;
                         let statusHtml = statusMessage ? `<span class="pip-status">${statusMessage}</span>` : '';
-        
+
                         if (isFinishedTemp) {
                             if (timer.isSounding) {
                                 controlsHtml = `<button class="pip-btn pip-stop-sound-btn-timer" data-id="${id}" style="background:#ea4335;width:auto;padding:0 8px;">Parar Som</button>
@@ -576,7 +583,7 @@
                     timersHtml += '<div class="item">Nenhum timer ativo</div>';
                 }
                 timersContainer.innerHTML = timersHtml;
-        
+
                 pipDoc.querySelectorAll('.pip-start-btn').forEach(btn => btn.onclick = () => startTimer(btn.dataset.id));
                 pipDoc.querySelectorAll('.pip-stop-btn').forEach(btn => btn.onclick = () => stopTimer(btn.dataset.id, true));
                 pipDoc.querySelectorAll('.pip-remove-btn').forEach(btn => btn.onclick = () => removeTimer(btn.dataset.id));
@@ -584,7 +591,7 @@
                 pipDoc.querySelectorAll('.pip-stop-sound-btn-timer').forEach(btn => btn.onclick = () => stopSoundFromPip(btn.dataset.id, 'timer'));
                 pipDoc.querySelectorAll('.pip-stop-sound-btn-alarm').forEach(btn => btn.onclick = () => stopSoundFromPip(btn.dataset.id, 'alarm'));
             }
-        
+
             async function togglePipDashboard() {
                 if (state.pipWindow) {
                     state.pipWindow.close();
@@ -636,12 +643,12 @@
                     state.pipWindow = null;
                 }
             }
-        
+
             // --- LÓGICA DOS TIMERS ---
             function resetTimer(id) {
                 const timer = state.timers[id];
                 if (!timer) return;
-        
+
                 const card = document.getElementById(`timer-${id}`);
                 const cardAudioPlayer = card.querySelector('.card-audio-player');
                 if (timer.isSounding) stopSound(cardAudioPlayer);
@@ -664,7 +671,7 @@
                 }
                 saveState();
             }
-        
+
             function createTimerCard(id, name, type, soundUrl, initialSeconds = 0, soundName = '') {
                 document.getElementById('timers-section').style.display = 'block';
                 const card = document.createElement('div');
@@ -679,9 +686,9 @@
                 
                 const isCron = type === 'cron';
                 state.timers[id] = { id, name, type, soundUrl, soundName, initialSeconds: isCron ? 0 : initialSeconds, targetSeconds: isCron ? initialSeconds : 0, targetReached: false, interval: null, startTime: 0, endTime:0, elapsedTime: 0, running: false, isSounding: false, displayElement: display };
-        
+
                 if (type === 'temp') { display.textContent = formatTime(initialSeconds); }
-        
+
                 card.querySelector('.start-btn').onclick = () => startTimer(id);
                 card.querySelector('.stop-btn').onclick = () => stopTimer(id, true);
                 card.querySelector('.remove-btn').onclick = () => removeTimer(id);
@@ -692,7 +699,7 @@
                     card.querySelector('.stop-sound-btn').style.display = 'none';
                 };
             }
-        
+
             function startTimer(id) {
                 const timer = state.timers[id];
                 if (!timer || timer.running) return;
@@ -700,12 +707,12 @@
                 timer.startTime = Date.now();
                 const card = document.getElementById(`timer-${id}`);
                 const cardAudioPlayer = card.querySelector('.card-audio-player');
-        
+
                 if (timer.type === 'cron') {
                     timer.interval = setInterval(() => {
                         const totalElapsedTime = timer.elapsedTime + (Date.now() - timer.startTime);
                         timer.displayElement.textContent = formatTime(totalElapsedTime / 1000);
-        
+
                         if (timer.targetSeconds > 0 && (totalElapsedTime / 1000) >= timer.targetSeconds && !timer.targetReached) {
                             timer.targetReached = true;
                             timer.displayElement.style.color = '#dc3545';
@@ -778,12 +785,12 @@
                     stopSound(cardAudioPlayer);
                     card.remove();
                 }
-        
+
                 delete state.timers[id];
                 if (Object.keys(state.timers).length === 0) document.getElementById('timers-section').style.display = 'none';
                 saveState();
             }
-        
+
             // --- LÓGICA DOS DESPERTADORES ---
             function createAlarmCard(id, name, alarmDate, soundUrl, soundName) {
                 document.getElementById('alarms-section').style.display = 'block';
@@ -803,7 +810,7 @@
                     state.alarms[id].isSounding = false;
                     stopSoundBtn.style.display = 'none';
                 };
-        
+
                 const interval = setInterval(() => {
                     if (new Date() >= alarmDate && !state.alarms[id].isSounding) {
                         statusEl.textContent = "Disparado!"; statusEl.style.color = '#dc3545';
@@ -824,7 +831,7 @@
                     saveState();
                 };
             }
-        
+
             // --- MUSIC PLAYER LOGIC ---
             const musicPlayer = document.getElementById('music-player-element');
             const playlistContainer = document.getElementById('playlist-container');
@@ -836,7 +843,7 @@
             const progressBar = document.getElementById('progress-bar');
             const playIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v14l11-7L8 5.14Z"/></svg>`;
             const pauseIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14Zm8-14v14h4V5h-4Z"/></svg>`;
-        
+
             function renderPlaylist() {
                 if (state.sounds.length === 0) {
                     playlistContainer.innerHTML = `<p style="text-align: center; opacity: 0.7;">Carregue suas músicas.</p>`;
@@ -866,7 +873,7 @@
                 trackInfo.textContent = track.name;
                 renderPlaylist();
             }
-        
+
             function togglePlayPause() {
                 if (state.musicPlayer.isPlaying) {
                     musicPlayer.pause();
@@ -881,7 +888,7 @@
                 }
                 state.musicPlayer.isPlaying = !state.musicPlayer.isPlaying;
             }
-        
+
             function playNext() {
                 let newIndex = state.musicPlayer.currentTrackIndex + 1;
                 if (newIndex >= state.sounds.length) {
@@ -889,7 +896,7 @@
                 }
                 playTrack(newIndex);
             }
-        
+
             function playPrev() {
                 let newIndex = state.musicPlayer.currentTrackIndex - 1;
                 if (newIndex < 0) {
@@ -936,7 +943,7 @@
                 updateSoundSelectors();
                 renderPlaylist();
             };
-        
+
             function updateSoundSelectors() {
                 const selectors = document.querySelectorAll('.sound-selector');
                 selectors.forEach(selector => {
@@ -951,14 +958,14 @@
                     selector.value = currentVal;
                 });
             }
-        
+
             function setupTimerPresetButtons() {
                 const container = document.getElementById('preset-times-container');
                 const presets = ['5m', '10m', '15m', '20m', '25m', '30m', '45m', '1h', '2h', '3h'];
                 const hInput = document.getElementById('temp-hours');
                 const mInput = document.getElementById('temp-minutes');
                 const sInput = document.getElementById('temp-seconds');
-        
+
                 presets.forEach(preset => {
                     const btn = document.createElement('button');
                     btn.className = 'preset-btn';
@@ -972,12 +979,12 @@
                     container.appendChild(btn);
                 });
             }
-        
+
             function setupAlarmPresetButtons() {
                 const container = document.getElementById('alarm-preset-times-container');
                 const presets = ['07:00', '08:00', '09:00', '12:00', '18:00', '22:00'];
                 const timeInput = document.getElementById('desp-time-input');
-        
+
                 presets.forEach(preset => {
                     const btn = document.createElement('button');
                     btn.className = 'preset-btn';
@@ -986,7 +993,38 @@
                     container.appendChild(btn);
                 });
             }
-        
+
+            function handleVisibilityChange() {
+                if (document.visibilityState === 'visible' && state.lastVisible === 'hidden') {
+                    // Resync timers
+                    for (const id in state.timers) {
+                        const timer = state.timers[id];
+                        if (timer.running) {
+                            // Stop the current interval and restart to resync
+                            stopTimer(id);
+                            startTimer(id);
+                        }
+                    }
+                     // Resync alarms
+                    for (const id in state.alarms) {
+                        const alarm = state.alarms[id];
+                        const card = document.getElementById(`alarm-${id}`);
+                        const statusEl = card.querySelector(`#status-${id}`);
+                        const stopSoundBtn = card.querySelector('.stop-sound-btn');
+                        const cardAudioPlayer = card.querySelector('.card-audio-player');
+                        if (new Date() >= alarm.alarmTime && !alarm.isSounding) {
+                             statusEl.textContent = "Disparado!"; statusEl.style.color = '#dc3545';
+                            showNotification("Despertador!", `Alarme "${alarm.name || id}" disparado!`); 
+                            playSound(cardAudioPlayer, alarm.soundUrl, true);
+                            alarm.isSounding = true;
+                            stopSoundBtn.style.display = 'inline-block';
+                        }
+                    }
+                }
+                state.lastVisible = document.visibilityState;
+            }
+
+
             // --- INICIALIZAÇÃO DA APLICAÇÃO ---
             window.onload = async () => {
                 startRelogio();
@@ -997,7 +1035,7 @@
                 if ("Notification" in window && Notification.permission === "default") {
                     Notification.requestPermission();
                 }
-        
+
                 // Desbloqueia o áudio no primeiro toque/clique do usuário (essencial para mobile)
                 let isAudioUnlocked = false;
                 const unlockMainAudio = () => {
@@ -1018,10 +1056,17 @@
                 
                 const themeToggleBtn = document.getElementById('theme-toggle-btn');
                 const togglePipBtn = document.getElementById('toggle-pip-btn');
+
+                // Oculta o botão PiP em dispositivos móveis
+                if (/Mobi/i.test(window.navigator.userAgent) || !('documentPictureInPicture' in window)) {
+                    togglePipBtn.style.display = 'none';
+                } else {
+                    togglePipBtn.onclick = togglePipDashboard;
+                }
                 
                 document.getElementById('preview-desp-sound').onclick = () => { const selector = document.getElementById('desp-sound-creator'); if (selector.value) previewSound(selector.value); };
                 document.getElementById('preview-timer-sound').onclick = () => { const selector = document.getElementById('timer-sound-creator'); if (selector.value) previewSound(selector.value); };
-        
+
                 playPauseBtn.onclick = togglePlayPause;
                 nextBtn.onclick = playNext;
                 prevBtn.onclick = playPrev;
@@ -1047,12 +1092,12 @@
                         playTrack(index);
                     }
                 });
-        
-        
+
+
                 const savedTheme = localStorage.getItem('theme') || 'light';
                 document.body.className = savedTheme === 'dark' ? 'dark-theme' : '';
                 themeToggleBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-        
+
                 themeToggleBtn.onclick = () => {
                     document.body.classList.toggle('dark-theme');
                     const isDark = document.body.classList.contains('dark-theme');
@@ -1062,21 +1107,33 @@
                         state.pipWindow.document.body.className = document.body.className;
                     }
                 };
-        
-                if (!('documentPictureInPicture' in window)) {
-                    togglePipBtn.disabled = true;
-                    togglePipBtn.title = 'Seu navegador não suporta esta funcionalidade.';
-                } else {
-                    togglePipBtn.onclick = togglePipDashboard;
-                }
-        
+
+                document.addEventListener('visibilitychange', handleVisibilityChange);
+
                 await initDB();
                 await loadState();
                 setInterval(saveState, 5000);
             };
             window.addEventListener('beforeunload', saveState);
             const activeTimersContainer = document.getElementById('active-timers-container');
-            const activeAlarmsContainer = document.getElementById('active-alarms-container');        
+            const activeAlarmsContainer = document.getElementById('active-alarms-container');
+
+        </script>
+
+        <!-- Script de registo do Service Worker para a PWA -->
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('service-worker.js')
+                        .then(registration => {
+                            console.log('Service Worker registado com sucesso:', registration);
+                        })
+                        .catch(error => {
+                            console.log('Falha no registo do Service Worker:', error);
+                        });
+                });
+            }
         </script>
     </body>
 </html>
+
