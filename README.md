@@ -9,11 +9,12 @@ Um dos principais diferenciais é o inovador modo **"Painel Flutuante" (Picture-
 ## ✨ Funcionalidades
 
 * **Relógio e Data em Tempo Real**: Um display claro e proeminente da hora e data atuais.
+* **Tocador de Música & Sons**: Um player integrado para ouvir e gerenciar todos os seus arquivos de áudio, que serve como biblioteca central para os sons dos alarmes e timers.
 * **Alarmes**: Crie múltiplos alarmes com nomes e sons personalizáveis. A aplicação irá notificá-lo com um alerta no desktop e o som escolhido.
 * **Temporizadores (Countdown)**: Defina contagens regressivas para diversas tarefas, especificando horas, minutos e segundos.
 * **Cronômetro**: Inicie um cronômetro para medir o tempo decorrido com um único clique.
 * **Painel Flutuante (Picture-in-Picture)**: Destaque a dashboard em uma pequena janela flutuante que permanece sobre outros aplicativos, permitindo o monitoramento constante.
-* **Personalização de Sons**: Faça o upload de seus próprios arquivos MP3 para usar como toques de alarme e temporizador. Os sons ficam salvos no navegador para uso futuro.
+* **Personalização de Sons**: Faça o upload de seus próprios arquivos MP3. Os sons ficam salvos no navegador para uso futuro.
 * **Sessões Persistentes**: Todos os alarmes, timers e configurações de som são salvos no armazenamento local do navegador. Seus timers continuarão de onde pararam, mesmo que a página seja recarregada.
 * **Temas Claro e Escuro**: Alterne entre os modos claro e escuro para se adequar à sua preferência visual e reduzir o cansaço visual.
 * **Tempos Pré-definidos**: Configure timers e alarmes rapidamente com botões de tempos comuns (ex: 5 min, 15 min, 1h).
@@ -22,20 +23,21 @@ Um dos principais diferenciais é o inovador modo **"Painel Flutuante" (Picture-
 ## 🚀 Como Usar
 
 1.  **Abra o arquivo `manager_time.html`** em qualquer navegador moderno. Para a funcionalidade completa do Painel Flutuante, recomenda-se o uso de navegadores baseados em Chromium (como Google Chrome ou Microsoft Edge).
-2.  **Para criar um Alarme**:
+2.  **Para carregar sons e músicas**:
+    * No card "Tocador de Música & Sons", clique em "Carregar Músicas (.mp3)" para adicionar seus arquivos de áudio.
+    * **Nota**: O repositório já inclui uma pasta `sounds/` com alguns arquivos de áudio que você pode carregar para começar a usar.
+    * As músicas carregadas aparecerão na playlist e estarão disponíveis nos seletores de som dos alarmes e timers.
+3.  **Para criar um Alarme**:
     * No card "Criar Despertador", defina um nome (opcional) e a hora desejada.
     * Escolha um som na lista.
     * Clique no botão "Despertador". Seu alarme aparecerá na seção "Alarmes Ativos".
-3.  **Para criar um Temporizador ou Cronômetro**:
+4.  **Para criar um Temporizador ou Cronômetro**:
     * No card "Criar Timer", defina um nome (opcional).
     * Para um **temporizador**, ajuste as horas, minutos e segundos e clique em "Temporizador".
     * Para um **cronômetro**, apenas clique em "Cronômetro" para iniciar a contagem.
-4.  **Para usar o Painel Flutuante**:
+5.  **Para usar o Painel Flutuante**:
     * Clique no botão "Painel Flutuante" no topo da página.
     * Uma mini-dashboard interativa irá aparecer, permitindo que você controle seus timers enquanto usa outros programas.
-5.  **Para personalizar os sons**:
-    * No card "Configurações de Sons", clique para selecionar um ou mais arquivos `.mp3` do seu computador.
-    * Após o upload, os novos sons estarão disponíveis nas listas de seleção.
 
 ## 🛠️ Tecnologias Utilizadas
 
